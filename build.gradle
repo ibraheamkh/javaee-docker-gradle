@@ -51,13 +51,17 @@ dependencies {
 
     compile group: 'org.jboss.arquillian', name: 'arquillian-bom', version: '1.2.1.Final', ext: 'pom'
     compile group: 'org.jboss.arquillian.protocol', name: 'arquillian-protocol-servlet', version: '1.2.0.Final'
+    compile group: 'org.jboss.arquillian.container', name: 'arquillian-wlp-managed-8.5', version: '1.0.0.Beta2'
+    
     compile group: 'org.jboss.shrinkwrap.resolver', name: 'shrinkwrap-resolver-gradle-depchain', version: '3.1.2', ext: 'pom'
     compile group: 'org.arquillian.cube', name: 'arquillian-cube-spi', version: '1.13.0'
+    
 
     testCompile "junit:junit:4.12"
+    testCompile group: 'org.jboss.arquillian', name: 'arquillian-junit', version: '1.0.0.Alpha4'
     testCompile group: 'org.jboss.arquillian.junit', name: 'arquillian-junit-container', version: '1.2.1.Final'
-
     testCompile group: 'org.arquillian.cube', name: 'arquillian-cube-docker', version: '1.13.0'
+    testCompile group: 'org.jboss.arquillian.extension', name: 'arquillian-rest-client-api', version: '1.0.0.Alpha4'
 
 
 
@@ -70,6 +74,9 @@ task copyDockerArtifacts(type: Copy) {
     }
     from('src/main/docker') {
         include 'Dockerfile'
+    }
+    from('src/main/docker') {
+    	include 'docker-compose.yml'
     }
     into 'build/docker'
 

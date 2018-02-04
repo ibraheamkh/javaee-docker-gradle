@@ -9,7 +9,20 @@
     <!--Specify application locatoin and id-->
     <application id="javaee-docker-gradle" location="javaee-docker-gradle.war" name="javaee-docker-gradle"/>
 
-    
+    <!-- Define an Administrator and non-Administrator -->
+    <basicRegistry id="basic">
+        <user name="admin" password="adminpwd"/>
+        <user name="nonadmin" password="nonadminpwd"/>
+    </basicRegistry>
+
+    <!-- Assign 'admin' to Administrator -->
+    <administrator-role>
+        <user>admin</user>
+    </administrator-role>
+
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+
+
     <!-- To allow access to this server from a remote client host="*" has been added to the following element -->
     <httpEndpoint id="defaultHttpEndpoint"
                   host="*"

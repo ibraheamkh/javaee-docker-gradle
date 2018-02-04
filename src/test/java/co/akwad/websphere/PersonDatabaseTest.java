@@ -5,6 +5,8 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.is;
 import javax.inject.Inject;
 
+import org.arquillian.cube.HostIp;
+import org.arquillian.cube.HostPort;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -15,6 +17,12 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class PersonDatabaseTest {
+	
+	@HostIp
+	String ip;
+	
+	@HostPort(containerName = "websphere", value = 8080)
+	int port;
 
     @Deployment
     public static WebArchive create() {
