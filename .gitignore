@@ -1,2 +1,13 @@
 build
+.idea/
 .gradle
+**/target/
+nb-configuration.xml
+/target/
+.settings
+.project
+.tern-project
+.classpath
+
+out
+gradle

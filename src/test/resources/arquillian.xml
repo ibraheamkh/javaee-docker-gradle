@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://jboss.org/schema/arquillian"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian
+    http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <!--Change these configs to go with websphere liberty-->
+    <container qualifier="wildfly" default="true">
+        <configuration>
+            <property name="target">wildfly:8.1.0.Final:remote</property>
+            <property name="managementPort">9991</property>
+            <property name="username">admin</property>
+            <property name="password">Admin#70365</property>
+        </configuration>
+    </container>
+
+    <extension qualifier="docker">
+        <property name="serverVersion">1.15</property>
+        <property name="definitionFormat">COMPOSE</property>
+        <property name="machineName">default</property>
+        <property name="dockerContainersFile">docker-compose.yml</property>
+        <property name="serverUri">https://dockerHost:2376</property>
+    </extension>
+
+</arquillian>

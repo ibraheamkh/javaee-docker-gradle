@@ -1,11 +1,13 @@
-package org.javaee7.sample;
+package co.akwad.websphere;
 
-import javax.xml.bind.annotation.XmlRootElement;
+
+
+
 
 /**
  * @author arungupta
  */
-@XmlRootElement
+
 public class Person {
     private String name;
 

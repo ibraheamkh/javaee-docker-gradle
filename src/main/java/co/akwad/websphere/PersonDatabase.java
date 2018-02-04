@@ -1,4 +1,4 @@
-package org.javaee7.sample;
+package co.akwad.websphere;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,9 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 import javax.ws.rs.NotFoundException;
 
-/**
- * @author arungupta
- */
+
 @Singleton
 public class PersonDatabase {
 

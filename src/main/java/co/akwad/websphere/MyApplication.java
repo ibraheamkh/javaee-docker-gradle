@@ -1,11 +1,8 @@
-package org.javaee7.sample;
+package co.akwad.websphere;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-/**
- * @author arungupta
- */
 @ApplicationPath("/resources")
 public class MyApplication extends Application {
 

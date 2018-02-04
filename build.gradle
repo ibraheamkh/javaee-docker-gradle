@@ -1,6 +1,7 @@
-group = 'org.javaee.sample'
+group = 'co.akwad.websphere'
 version = '1.0-SNAPSHOT'
 
+apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'com.bmuschko.docker-remote-api'
 
@@ -10,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.bmuschko:gradle-docker-plugin:3.0.3'
+        classpath 'com.bmuschko:gradle-docker-plugin:3.2.2'
     }
 }
 
@@ -30,11 +31,36 @@ configurations {
 }
 
 docker {
-  url = 'unix:///var/run/docker.sock'
+
+    if (System.env.DOCKER_HOST) {
+        url = "$System.env.DOCKER_HOST".replace("tcp","https")
+        if (System.env.DOCKER_CERT_PATH) {
+            certPath = new File(System.env.DOCKER_CERT_PATH)
+
+        }
+    }
+    else {
+        url = 'unix:///var/run/docker.sock'
+    }
+
 }
 
 dependencies {
     providedCompile group: 'javax', name: 'javaee-api', version:'7.0'
+
+
+    compile group: 'org.jboss.arquillian', name: 'arquillian-bom', version: '1.2.1.Final', ext: 'pom'
+    compile group: 'org.jboss.arquillian.protocol', name: 'arquillian-protocol-servlet', version: '1.2.0.Final'
+    compile group: 'org.jboss.shrinkwrap.resolver', name: 'shrinkwrap-resolver-gradle-depchain', version: '3.1.2', ext: 'pom'
+    compile group: 'org.arquillian.cube', name: 'arquillian-cube-spi', version: '1.13.0'
+
+    testCompile "junit:junit:4.12"
+    testCompile group: 'org.jboss.arquillian.junit', name: 'arquillian-junit-container', version: '1.2.1.Final'
+
+    testCompile group: 'org.arquillian.cube', name: 'arquillian-cube-docker', version: '1.13.0'
+
+
+
 }
 
 task copyDockerArtifacts(type: Copy) {
@@ -46,11 +72,34 @@ task copyDockerArtifacts(type: Copy) {
         include 'Dockerfile'
     }
     into 'build/docker'
+
     rename "javaee-docker-gradle-${project.version}.war", 'javaee-docker-gradle.war'
 }
 
-task buildImage(type: DockerBuildImage) {
+task copyAppServerXML(type : Copy) {
     dependsOn copyDockerArtifacts
+
+    from('src/main/resources') {
+        include 'server.xml'
+    }
+    into 'build/docker/app'
+
+}
+
+//task copyAdminServerXML(type : Copy) {
+//    dependsOn copyAppServerXML
+//
+//    from('src/main/resources') {
+//        include 'admin-server.xml'
+//    }
+//    into 'build/docker/admin-app'
+//
+//    rename 'admin-server.xml' , 'server.xml'
+//
+//}
+
+task buildImage(type: DockerBuildImage) {
+    dependsOn copyAppServerXML
     inputDir = project.file('build/docker')
     tag = 'javaee-docker-gradle'
 }
@@ -58,7 +107,8 @@ task buildImage(type: DockerBuildImage) {
 task createContainer(type: DockerCreateContainer) {
     dependsOn buildImage
     targetImageId { buildImage.getImageId() }
-    portBindings = ['8080:8080']
+    containerName "websphere"
+    portBindings = ['8080:9080','443:9443']
 }
 
 task startContainer(type: DockerStartContainer) {
