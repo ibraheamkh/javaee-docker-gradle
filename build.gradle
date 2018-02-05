@@ -5,11 +5,8 @@ apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'com.bmuschko.docker-remote-api'
 apply plugin: JavaPlugin
+apply plugin: 'arquillian'
 
-//libraryVersions = [
-//        junit: '4.8.1', arquillian: '1.0.0.Alpha4', jbossJavaeeSpec: '1.0.0.Beta7', weld: '1.0.1-Final',
-//        slf4j: '1.5.8', log4j: '1.2.14', jbossas: '6.0.0.Final', glassfish: '3.0.1-b20', cdi: '1.0-SP1'
-//]
 
 buildscript {
     repositories {
@@ -23,6 +20,7 @@ buildscript {
 
     dependencies {
         classpath 'com.bmuschko:gradle-docker-plugin:3.2.2'
+        classpath 'org.jboss.arquillian.gradle:arquillian-gradle-plugin:0.1'
     }
 }
 
@@ -36,9 +34,6 @@ targetCompatibility = 1.8
 configurations {
 	//these settings are for arquillian test
     compileOnly
-    weldEmbeddedTestRuntime { extendsFrom testRuntime }
-    jbossasRemoteTestRuntime { extendsFrom testRuntime, compileOnly }
-    glassfishEmbeddedTestRuntime { extendsFrom testRuntime }
     
     //this config for docker 
     dockerJava {
@@ -73,11 +68,16 @@ docker {
 
 }
 
+
+
+
+
 dependencies {
     providedCompile group: 'javax', name: 'javaee-api', version:'7.0'
 
 
     compile group: 'org.jboss.arquillian', name: 'arquillian-bom', version: '1.2.1.Final', ext: 'pom'
+    compile group: 'org.jboss.arquillian.junit', name: 'arquillian-junit-core', version: '1.2.1.Final'
     compile group: 'org.jboss.arquillian.protocol', name: 'arquillian-protocol-servlet', version: '1.2.0.Final'
     compile group: 'org.jboss.arquillian.container', name: 'arquillian-wlp-managed-8.5', version: '1.0.0.Beta2'
     
@@ -92,25 +92,9 @@ dependencies {
     testCompile group: 'org.jboss.arquillian.extension', name: 'arquillian-rest-client-api', version: '1.0.0.Alpha4'
     testCompile group: 'org.wildfly', name:'wildfly-arquillian-container-remote', version:'8.2.0.Final'
 
-    // temporarily downgrade the weld-ee-embedded-1.1 container
-    weldEmbeddedTestRuntime group: 'org.jboss.arquillian.container', name: 'arquillian-weld-ee-embedded-1.1', version: '1.0.0.Alpha3'
-    weldEmbeddedTestRuntime group: 'org.jboss.spec', name: 'jboss-javaee-6.0', version: '1.0.0.Beta7'
-    weldEmbeddedTestRuntime group: 'org.jboss.weld', name: 'weld-core', version: '1.0.1-Final'
-    weldEmbeddedTestRuntime group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.5.8'
-    weldEmbeddedTestRuntime group: 'log4j', name: 'log4j', version: '1.2.14'
-
-    jbossasRemoteTestRuntime group: 'org.jboss.arquillian.container', name: 'arquillian-jbossas-remote-60', version: '1.0.0.Alpha4'
-    //compile group: 'org.jboss.arquillian.container', name: 'arquillian-jbossas-remote-60', version: '1.0.0.Alpha1'
-    
-    jbossasRemoteTestRuntime group: 'org.jboss.jbossas', name: 'jboss-as-server', classifier: 'client', version: '6.0.0.Final', transitive: false
-    jbossasRemoteTestRuntime group: 'org.jboss.jbossas', name: 'jboss-as-profileservice', classifier: 'client', version: '6.0.0.Final'
-
-    glassfishEmbeddedTestRuntime group: 'org.jboss.arquillian.container', name: 'arquillian-glassfish-embedded-30', version: '1.0.0.Alpha4'
-    glassfishEmbeddedTestRuntime group: 'org.glassfish.extras', name: 'glassfish-embedded-all', version: '3.0.1-b20'
-
-
-
+   
 }
+
 
 task copyDockerArtifacts(type: Copy) {
     dependsOn build
@@ -138,20 +122,20 @@ task copyAppServerXML(type : Copy) {
 
 }
 
-//task copyAdminServerXML(type : Copy) {
-//    dependsOn copyAppServerXML
-//
-//    from('src/main/resources') {
-//        include 'admin-server.xml'
-//    }
-//    into 'build/docker/admin-app'
-//
-//    rename 'admin-server.xml' , 'server.xml'
-//
-//}
+task copyAdminServerXML(type : Copy) {
+    dependsOn copyAppServerXML
+
+    from('src/main/resources') {
+        include 'admin-server.xml'
+    }
+    into 'build/docker/admin-app'
+
+    rename 'admin-server.xml' , 'server.xml'
+
+}
 
 task buildImage(type: DockerBuildImage) {
-    dependsOn copyAppServerXML
+    dependsOn copyAdminServerXML
     inputDir = project.file('build/docker')
     tag = 'javaee-docker-gradle'
 }

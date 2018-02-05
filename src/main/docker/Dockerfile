@@ -1,5 +1,8 @@
 FROM websphere-liberty:latest
 
+##installing the admin center
+RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense adminCenter-1.0
+
 ## Copy the app server xml
 COPY app/server.xml /opt/ibm/wlp/usr/servers/defaultServer/server.xml
 
@@ -12,21 +15,16 @@ RUN unzip /opt/ibm/wlp/usr/servers/defaultServer/apps/javaee-docker-gradle.war -
 
 
 
-
-
-##installing the admin center
-#RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense adminCenter-1.0
-
 ##Each app in websphere runs in its own container which is a server
 ##our app runs on the default container which is created by default
 ##if we need to add another app, we have to create server for that app
 ##idea: copy and run bash script within the container
 
 ### create admin center server
-#RUN /opt/ibm/wlp/bin/server create adminServer
+RUN /opt/ibm/wlp/bin/server create adminServer
 #
 ###add server.xml
-#COPY admin-app/server.xml /opt/ibm/wlp/usr/servers/adminServer/server.xml
+COPY admin-app/server.xml /opt/ibm/wlp/usr/servers/adminServer/server.xml
 #
 #RUN /opt/ibm/wlp/bin/server run adminServer &&
 #RUN /opt/ibm/wlp/bin/server run defaultServer &&
@@ -35,8 +33,8 @@ RUN unzip /opt/ibm/wlp/usr/servers/defaultServer/apps/javaee-docker-gradle.war -
 ###RUN /opt/ibm/wlp/server run adminServer
 #
 ###Exposing Admin panel
-#EXPOSE 9060
-#EXPOSE 9043
+EXPOSE 9060
+EXPOSE 9043
 
 
 

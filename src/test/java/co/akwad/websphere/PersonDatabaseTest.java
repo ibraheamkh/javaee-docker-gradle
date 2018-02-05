@@ -18,11 +18,11 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class PersonDatabaseTest {
 	
-	@HostIp
-	String ip;
-	
-	@HostPort(containerName = "websphere", value = 8080)
-	int port;
+//	@HostIp
+//	String ip;
+//	
+//	@HostPort(containerName = "websphere", value = 8080)
+//	int port;
 
     @Deployment
     public static WebArchive create() {
