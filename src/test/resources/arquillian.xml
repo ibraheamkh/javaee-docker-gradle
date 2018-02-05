@@ -1,21 +1,31 @@
 <?xml version="1.0"?>
 <arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://jboss.org/schema/arquillian"
-	xsi:schemaLocation="http://jboss.org/schema/arquillian
+            xmlns="http://jboss.org/schema/arquillian"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian
     http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-	<extension qualifier="docker">
-		<property name="autoStartContainers">true</property>
-		<property name="dockerContainersFile">src/main/dokcer/docker-compose.yml</property>
-		<property name="serverVersion">17.05.0</property>
-		<property name="serverUri">unix:///var/run/docker.sock</property>
-		<property name="tlsVerify">false</property>
-	</extension>
-	
-	<container qualifier="websphere" default="true">
-    <configuration>
-					
-    </configuration>
-</container>
+    <container qualifier="wildfly" default="true">
+        <configuration>
+            <property name="target">wildfly:8.2.0.Final:remote</property>
+            <property name="managementPort">9990</property>
+            <property name="username">admin</property>
+            <property name="password">Admin#70365</property>
+        </configuration>
+    </container>
+
+    <extension qualifier="docker">
+        <property name="definitionFormat">COMPOSE</property>
+        <property name="dockerContainersFile">src/test/resources/wildfly/docker-compose.yml</property>
+        <property name="serverVersion">17.05.0</property>
+        <property name="serverUri">unix:///var/run/docker.sock</property>
+    </extension>
+
+    <!--<container qualifier="websphere" default="true">-->
+        <!--<configuration>-->
+
+        <!--</configuration>-->
+    <!--</container>-->
+
+
 
 </arquillian>
