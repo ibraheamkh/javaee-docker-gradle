@@ -6,15 +6,19 @@ apply plugin: 'war'
 apply plugin: 'com.bmuschko.docker-remote-api'
 apply plugin: JavaPlugin
 
-libraryVersions = [
-        junit: '4.8.1', arquillian: '1.0.0.Alpha4', jbossJavaeeSpec: '1.0.0.Beta7', weld: '1.0.1-Final',
-        slf4j: '1.5.8', log4j: '1.2.14', jbossas: '6.0.0.Final', glassfish: '3.0.1-b20', cdi: '1.0-SP1'
-]
+//libraryVersions = [
+//        junit: '4.8.1', arquillian: '1.0.0.Alpha4', jbossJavaeeSpec: '1.0.0.Beta7', weld: '1.0.1-Final',
+//        slf4j: '1.5.8', log4j: '1.2.14', jbossas: '6.0.0.Final', glassfish: '3.0.1-b20', cdi: '1.0-SP1'
+//]
 
 buildscript {
     repositories {
         jcenter()
         //mavenCentral()
+        maven {
+        url 'http://repository.jboss.org/nexus/content/groups/public'
+       // url "http://maven.restlet.org"
+    	}
     }
 
     dependencies {
@@ -30,10 +34,13 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 configurations {
+	//these settings are for arquillian test
     compileOnly
     weldEmbeddedTestRuntime { extendsFrom testRuntime }
     jbossasRemoteTestRuntime { extendsFrom testRuntime, compileOnly }
     glassfishEmbeddedTestRuntime { extendsFrom testRuntime }
+    
+    //this config for docker 
     dockerJava {
         resolutionStrategy {
             force 'de.gesellix:unix-socket-factory:2016-04-06T22-21-19'
@@ -87,17 +94,19 @@ dependencies {
 
     // temporarily downgrade the weld-ee-embedded-1.1 container
     weldEmbeddedTestRuntime group: 'org.jboss.arquillian.container', name: 'arquillian-weld-ee-embedded-1.1', version: '1.0.0.Alpha3'
-    weldEmbeddedTestRuntime group: 'org.jboss.spec', name: 'jboss-javaee-6.0', version: libraryVersions.jbossJavaeeSpec
-    weldEmbeddedTestRuntime group: 'org.jboss.weld', name: 'weld-core', version: libraryVersions.weld
-    weldEmbeddedTestRuntime group: 'org.slf4j', name: 'slf4j-log4j12', version: libraryVersions.slf4j
-    weldEmbeddedTestRuntime group: 'log4j', name: 'log4j', version: libraryVersions.log4j
+    weldEmbeddedTestRuntime group: 'org.jboss.spec', name: 'jboss-javaee-6.0', version: '1.0.0.Beta7'
+    weldEmbeddedTestRuntime group: 'org.jboss.weld', name: 'weld-core', version: '1.0.1-Final'
+    weldEmbeddedTestRuntime group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.5.8'
+    weldEmbeddedTestRuntime group: 'log4j', name: 'log4j', version: '1.2.14'
 
-    jbossasRemoteTestRuntime group: 'org.jboss.arquillian.container', name: 'arquillian-jbossas-remote-6', version: libraryVersions.arquillian
-    jbossasRemoteTestRuntime group: 'org.jboss.jbossas', name: 'jboss-as-server', classifier: 'client', version: libraryVersions.jbossas, transitive: false
-    jbossasRemoteTestRuntime group: 'org.jboss.jbossas', name: 'jboss-as-profileservice', classifier: 'client', version: libraryVersions.jbossas
+    jbossasRemoteTestRuntime group: 'org.jboss.arquillian.container', name: 'arquillian-jbossas-remote-60', version: '1.0.0.Alpha4'
+    //compile group: 'org.jboss.arquillian.container', name: 'arquillian-jbossas-remote-60', version: '1.0.0.Alpha1'
+    
+    jbossasRemoteTestRuntime group: 'org.jboss.jbossas', name: 'jboss-as-server', classifier: 'client', version: '6.0.0.Final', transitive: false
+    jbossasRemoteTestRuntime group: 'org.jboss.jbossas', name: 'jboss-as-profileservice', classifier: 'client', version: '6.0.0.Final'
 
-    glassfishEmbeddedTestRuntime group: 'org.jboss.arquillian.container', name: 'arquillian-glassfish-embedded-3', version: libraryVersions.arquillian
-    glassfishEmbeddedTestRuntime group: 'org.glassfish.extras', name: 'glassfish-embedded-all', version: libraryVersions.glassfis
+    glassfishEmbeddedTestRuntime group: 'org.jboss.arquillian.container', name: 'arquillian-glassfish-embedded-30', version: '1.0.0.Alpha4'
+    glassfishEmbeddedTestRuntime group: 'org.glassfish.extras', name: 'glassfish-embedded-all', version: '3.0.1-b20'
 
 
 
