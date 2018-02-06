@@ -5,7 +5,7 @@ apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'com.bmuschko.docker-remote-api'
 apply plugin: JavaPlugin
-apply plugin: 'arquillian'
+//apply plugin: 'arquillian'
 
 
 buildscript {
@@ -20,7 +20,7 @@ buildscript {
 
     dependencies {
         classpath 'com.bmuschko:gradle-docker-plugin:3.2.2'
-        classpath 'org.jboss.arquillian.gradle:arquillian-gradle-plugin:0.1'
+       // classpath 'org.jboss.arquillian.gradle:arquillian-gradle-plugin:0.1'
     }
 }
 
@@ -144,7 +144,7 @@ task createContainer(type: DockerCreateContainer) {
     dependsOn buildImage
     targetImageId { buildImage.getImageId() }
     containerName "websphere"
-    portBindings = ['8080:9080','443:9443']
+    portBindings = ['8080:9080','443:9443', '8060:9060']
 }
 
 task startContainer(type: DockerStartContainer) {

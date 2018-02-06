@@ -14,10 +14,9 @@
 	</container>
 
 	<extension qualifier="docker">
-		<property name="definitionFormat">COMPOSE</property>
 		<property name="dockerContainersFile">src/test/resources/wildfly/docker-compose.yml</property>
 		<property name="serverVersion">17.05.0</property>
-		<property name="serverUri">http://127.0.0.1:2375</property>
+		<property name="serverUri">localhost</property>
 	</extension>
 
 	<!--<container qualifier="websphere" default="true"> -->
