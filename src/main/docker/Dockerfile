@@ -2,16 +2,18 @@ FROM websphere-liberty:latest
 
 ##installing the admin center
 RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense adminCenter-1.0
+#RUN /opt/ibm/wlp/bin/installUtility install --acceptLicense defaultServer
 
+RUN server create appServer
 ## Copy the app server xml
-COPY app/server.xml /opt/ibm/wlp/usr/servers/defaultServer/server.xml
+COPY app/server.xml /opt/ibm/wlp/usr/servers/appServer/server.xml
 
 ## adding the war manually to apps inside the default server
-ADD javaee-docker-gradle.war /opt/ibm/wlp/usr/servers/defaultServer/apps/javaee-docker-gradle.war
+ADD javaee-docker-gradle.war /opt/ibm/wlp/usr/servers/appServer/apps/javaee-docker-gradle.war
 ## making the expanded directory manually
-RUN mkdir /opt/ibm/wlp/usr/servers/defaultServer/apps/expanded/
+RUN mkdir /opt/ibm/wlp/usr/servers/appServer/apps/expanded/
 ## extracting the war file manually
-RUN unzip /opt/ibm/wlp/usr/servers/defaultServer/apps/javaee-docker-gradle.war -d /opt/ibm/wlp/usr/servers/defaultServer/apps/expanded/javaee-docker-gradle.war/
+RUN unzip /opt/ibm/wlp/usr/servers/appServer/apps/javaee-docker-gradle.war -d /opt/ibm/wlp/usr/servers/appServer/apps/expanded/javaee-docker-gradle.war/
 
 
 
@@ -21,12 +23,12 @@ RUN unzip /opt/ibm/wlp/usr/servers/defaultServer/apps/javaee-docker-gradle.war -
 ##idea: copy and run bash script within the container
 
 ### create admin center server
-RUN /opt/ibm/wlp/bin/server create adminServer
+#RUN /opt/ibm/wlp/bin/server create adminServer
 #
 ###add server.xml
-COPY admin-app/server.xml /opt/ibm/wlp/usr/servers/adminServer/server.xml
+COPY admin-app/server.xml /opt/ibm/wlp/usr/servers/defaultServer/server.xml
 #
-#RUN /opt/ibm/wlp/bin/server run adminServer &&
+#RUN /opt/ibm/wlp/bin/server run adminServer && bin/bash
 #RUN /opt/ibm/wlp/bin/server run defaultServer &&
 #
 ###starting the server manually
@@ -36,8 +38,7 @@ COPY admin-app/server.xml /opt/ibm/wlp/usr/servers/adminServer/server.xml
 EXPOSE 9060
 EXPOSE 9043
 
-
-CMD ["/opt/ibm/wlp/bin/server", "run", "adminServer"]
+ENTRYPOINT /opt/ibm/wlp/bin/server run appServer && /opt/ibm/wlp/bin/server run defaultServer && /bin/bash
 
 ##Instructions for wildfly
 #FROM wildfly:latest

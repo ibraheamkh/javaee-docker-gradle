@@ -144,7 +144,7 @@ task createContainer(type: DockerCreateContainer) {
     dependsOn buildImage
     targetImageId { buildImage.getImageId() }
     containerName "websphere"
-    portBindings = ['8080:9080','443:9443', '8060:9060']
+    portBindings = ['8080:9080','443:9443', '8060:9060','8043:9043']
 }
 
 task startContainer(type: DockerStartContainer) {

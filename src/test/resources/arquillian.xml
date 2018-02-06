@@ -4,14 +4,29 @@
 	xsi:schemaLocation="http://jboss.org/schema/arquillian
     http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-	<container qualifier="wildfly" default="true">
+	<!-- <container qualifier="wildfly" default="true">
 		<configuration>
 			<property name="target">wildfly:8.2.0.Final:remote</property>
 			<property name="managementPort">9990</property>
 			<property name="username">admin</property>
 			<property name="password">Admin#70365</property>
 		</configuration>
-	</container>
+	</container> -->
+	
+	<engine>
+        <property name="deploymentExportPath">target/</property>
+    </engine>
+ 
+    <container qualifier="wlp-remote">
+        <configuration>   
+            <property name="hostName">localhost</property>
+            <property name="serverName">defaultServer</property>
+            <property name="username">admin</property>
+            <property name="password">admin</property>
+            <property name="httpPort">8080</property>
+            <property name="httpsPort">443</property>
+        </configuration>
+    </container>
 
 	<extension qualifier="docker">
 		<property name="dockerContainersFile">src/test/resources/wildfly/docker-compose.yml</property>
