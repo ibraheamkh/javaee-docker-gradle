@@ -3,8 +3,17 @@
 	xmlns="http://jboss.org/schema/arquillian"
 	xsi:schemaLocation="http://jboss.org/schema/arquillian
     http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
-
-	<!-- <container qualifier="wildfly" default="true">
+	
+	<defaultProtocol type="Servlet 3.0" />
+ 
+    <!-- Configuration to be used when the WildFly managed profile is active -->
+    <container qualifier="widlfly-managed" default="true">
+        <configuration>
+            <property name="jbossHome">${jbossHome:target/wildfly-8.1.0.Final}</property>
+        </configuration>
+    </container>
+    
+    <!-- <container qualifier="wildfly" default="true">
 		<configuration>
 			<property name="target">wildfly:8.2.0.Final:remote</property>
 			<property name="managementPort">9990</property>
@@ -12,33 +21,19 @@
 			<property name="password">Admin#70365</property>
 		</configuration>
 	</container> -->
-	
-	<engine>
-        <property name="deploymentExportPath">target/</property>
-    </engine>
- 
-    <container qualifier="wlp-remote">
-        <configuration>   
-            <property name="hostName">localhost</property>
-            <property name="serverName">defaultServer</property>
-            <property name="username">admin</property>
-            <property name="password">admin</property>
-            <property name="httpPort">8080</property>
-            <property name="httpsPort">443</property>
-        </configuration>
-    </container>
 
-	<extension qualifier="docker">
-		<property name="dockerContainersFile">src/test/resources/wildfly/docker-compose.yml</property>
-		<property name="serverVersion">17.05.0</property>
-		<property name="serverUri">localhost</property>
-	</extension>
 
 	<!--<container qualifier="websphere" default="true"> -->
 	<!--<configuration> -->
 
 	<!--</configuration> -->
 	<!--</container> -->
+	
+	<!-- <extension qualifier="docker">
+		<property name="dockerContainersFile">src/test/resources/wildfly/docker-compose.yml</property>
+		<property name="serverVersion">17.05.0</property>
+		<property name="serverUri">localhost</property>
+	</extension> -->
 
 
 
